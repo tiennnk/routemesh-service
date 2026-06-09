@@ -21,12 +21,12 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsPhoneNumber('VN')
   @Length(10, 10)
-  @ApiProperty({ example: '0123456789' })
+  @ApiProperty({ example: '0333456789' })
   phone!: string;
 
   @IsEmail()
   @IsOptional()
-  @ApiPropertyOptional({ example: 'test@email.com' })
+  @ApiPropertyOptional({ example: 'test@gmail.com' })
   email?: string;
 
   @IsEnum(UserRole)
