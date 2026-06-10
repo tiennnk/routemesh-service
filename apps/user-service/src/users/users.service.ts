@@ -33,7 +33,7 @@ export class UsersService {
     return this.usersRepo.findOneBy({ phone });
   }
 
-  async deleteUserById(id: number): Promise<void> {
+  async delete(id: number): Promise<void> {
     const user = await this.usersRepo.findOneBy({ id });
 
     if (!user) {
