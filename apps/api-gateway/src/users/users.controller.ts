@@ -24,6 +24,6 @@ export class UsersController {
 
   @Delete(':id')
   deleteUser(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.usersService.deleteUserById(id);
+    return this.usersService.deleteUser(id);
   }
 }

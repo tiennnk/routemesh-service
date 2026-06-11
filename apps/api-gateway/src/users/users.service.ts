@@ -1,55 +1,26 @@
-import { Injectable } from '@nestjs/common';
-import { HttpService } from '@nestjs/axios';
-import { ConfigService } from '@nestjs/config';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
 import { CreateUserDto } from './dto/create-user.dto';
 
-type UserResponse = {
-  id: number;
-  name: string;
-  phone: string;
-  email?: string;
-  role?: string;
-};
-
 @Injectable()
 export class UsersService {
-  private readonly usersUrl: string;
+  constructor(@Inject('USER_SERVICE') private readonly client: ClientProxy) {}
 
-  constructor(
-    private readonly httpService: HttpService,
-    private readonly configService: ConfigService,
-  ) {
-    const port = this.configService.get<string>('USER_SERVICE_PORT');
-    this.usersUrl = `http://localhost:${port}/users`;
+  createUser(dto: CreateUserDto) {
+    return firstValueFrom(this.client.send('create_user', dto));
   }
 
-  async createUser(dto: CreateUserDto): Promise<UserResponse> {
-    const { data } = await firstValueFrom(this.httpService.post<UserResponse>(this.usersUrl, dto));
-
-    return data;
+  getUserById(id: number) {
+    return firstValueFrom(this.client.send('get_user_by_id', id));
   }
 
-  async getUserById(id: number): Promise<UserResponse> {
-    const { data } = await firstValueFrom(
-      this.httpService.get<UserResponse>(`${this.usersUrl}/${id}`),
-    );
-
-    return data;
+  getUserByPhone(phone: string) {
+    return firstValueFrom(this.client.send('get_user_by_phone', phone));
   }
 
-  async getUserByPhone(phone: string): Promise<UserResponse> {
-    const { data } = await firstValueFrom(
-      this.httpService.get<UserResponse>(`${this.usersUrl}/${phone}`),
-    );
-
-    return data;
-  }
-
-  async deleteUserById(id: number): Promise<void> {
-    const { data } = await firstValueFrom(this.httpService.delete<void>(`${this.usersUrl}/${id}`));
-
-    return data;
+  deleteUser(id: number) {
+    return firstValueFrom(this.client.send('delete_user', id));
   }
 }
