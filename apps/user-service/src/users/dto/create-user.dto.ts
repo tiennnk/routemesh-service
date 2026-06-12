@@ -21,7 +21,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   @IsPhoneNumber('VN')
   @Length(10, 10)
-  @ApiProperty({ example: '0333456789' })
+  @ApiProperty({ example: '0323456789' })
   phone!: string;
 
   @IsEmail()
