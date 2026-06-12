@@ -34,7 +34,7 @@ describe('UsersService', () => {
   });
 
   describe('create', () => {
-    const dto = { name: 'Tien Nguyen', phone: '0323456789', role: UserRole.RIDER }
+    const dto = { name: 'Tien Nguyen', phone: '0323456789', role: UserRole.RIDER };
 
     it('create user and return data user', async () => {
       const savedUser = { id: 1, ...dto } as User;
