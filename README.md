@@ -1,3 +1,59 @@
+# RouteMesh Service
+
+A ride-hailing backend using NestJS microservices. Requests come in through the api-gateway and get routed to downstream services via RabbitMQ.
+
+## Stack
+
+- **NestJS** — api-gateway + user-service
+- **RabbitMQ** — messaging between services
+- **PostgreSQL** — persistent storage
+- **Redis** — caching and session storage
+- **WebSocket** — real-time communication
+- **Docker Compose** — local infrastructure
+
+## Architecture
+
+```mermaid
+graph LR
+  Client -->|HTTP :3000| api-gateway
+  api-gateway -->|RabbitMQ| user-service
+  user-service -->|TypeORM| PostgreSQL
+```
+
+## Getting started
+
+```bash
+docker compose up -d
+cp .env.example .env
+npm install
+npm run start:dev user-service
+npm run start:dev api-gateway
+```
+
+## API
+
+Swagger docs:
+
+- api-gateway: `http://localhost:3000/api`
+- user-service: `http://localhost:3001/api`
+
+| Method | Endpoint             | Description   |
+|--------|----------------------|---------------|
+| POST | /users | Create user |
+| GET | /users/:id | Get by ID |
+| GET | /users/phone/:phone | Get by phone |
+| DELETE | /users/:id | Delete user |
+
+## Testing
+
+```bash
+npm test
+```
+
+CI runs on every push via GitHub Actions.
+
+---
+
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
