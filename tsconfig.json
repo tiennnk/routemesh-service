@@ -21,7 +21,17 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {},
-    "types": ["jest", "node"]
+    "paths": {
+      "@app/shared": [
+        "libs/shared/src"
+      ],
+      "@app/shared/*": [
+        "libs/shared/src/*"
+      ]
+    },
+    "types": [
+      "jest",
+      "node"
+    ]
   }
 }
