@@ -3,11 +3,6 @@ export * from './shared.service';
 
 export * from './patterns/driver.patterns';
 export * from './patterns/user.patterns';
-
-export * from './types/driver.types';
-
-export * from './patterns/driver.patterns';
-export * from './patterns/user.patterns';
 export * from './patterns/trip.patterns';
 
 export * from './types/driver.types';
