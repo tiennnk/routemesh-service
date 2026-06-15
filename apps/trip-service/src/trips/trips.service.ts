@@ -1,16 +1,24 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Trip } from '../entities/trip.entity';
 import { CreateTripDto, UpdateTripStatusDto, AcceptTripDto, TripStatus } from '@app/shared';
 
+const VALID_TRANSITIONS = {
+  [TripStatus.PENDING]: [TripStatus.ACCEPTED, TripStatus.CANCELLED],
+  [TripStatus.ACCEPTED]: [TripStatus.IN_PROGRESS, TripStatus.CANCELLED],
+  [TripStatus.IN_PROGRESS]: [TripStatus.COMPLETED, TripStatus.CANCELLED],
+  [TripStatus.COMPLETED]: [],
+  [TripStatus.CANCELLED]: [],
+};
+
 @Injectable()
 export class TripsService {
   constructor(
     @InjectRepository(Trip)
     private readonly tripRepository: Repository<Trip>,
-  ) {}
+  ) { }
 
   createTrip(dto: CreateTripDto): Promise<Trip> {
     const trip = this.tripRepository.create(dto);
@@ -30,13 +38,33 @@ export class TripsService {
 
   async updateTripStatus(id: number, dto: UpdateTripStatusDto): Promise<Trip> {
     const trip = await this.getTripOrFail(id);
+
+    const oldStatus = trip.status;
+    const newStatus = dto.status;
+
+    const validNextStatus = VALID_TRANSITIONS[oldStatus];
+
+    if (!validNextStatus.includes(newStatus)) {
+      throw new BadRequestException(`Cannot update status from ${oldStatus} to ${newStatus}`);
+    }
+
     trip.status = dto.status;
     return this.tripRepository.save(trip);
   }
 
   async cancelTrip(id: number): Promise<Trip> {
     const trip = await this.getTripOrFail(id);
+
+    const validNextStatus = VALID_TRANSITIONS[trip.status];
+
+    if (!validNextStatus.includes(TripStatus.CANCELLED)) {
+      throw new BadRequestException(
+        `Cannot update status from ${trip.status} to ${TripStatus.CANCELLED}`,
+      );
+    }
+
     trip.status = TripStatus.CANCELLED;
+
     return this.tripRepository.save(trip);
   }
 
