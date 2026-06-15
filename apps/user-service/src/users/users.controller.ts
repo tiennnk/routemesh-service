@@ -2,8 +2,7 @@ import { Controller, Param, Get, Post, Body, Delete, ParseIntPipe } from '@nestj
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { UsersService } from './users.service';
-
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, USER_PATTERNS } from '@app/shared';
 
 @Controller('users')
 export class UsersController {
@@ -29,22 +28,22 @@ export class UsersController {
     return this.usersService.delete(id);
   }
 
-  @MessagePattern('create_user')
+  @MessagePattern(USER_PATTERNS.CREATE)
   createUserMQ(@Payload() dto: CreateUserDto) {
     return this.usersService.create(dto);
   }
 
-  @MessagePattern('get_user_by_id')
+  @MessagePattern(USER_PATTERNS.FIND_BY_ID)
   getUserByIdMQ(id: number) {
     return this.usersService.findUserById(id);
   }
 
-  @MessagePattern('get_user_by_phone')
+  @MessagePattern(USER_PATTERNS.FIND_BY_PHONE)
   getUserByPhoneMQ(phone: string) {
     return this.usersService.findUserByPhone(phone);
   }
 
-  @MessagePattern('delete_user')
+  @MessagePattern(USER_PATTERNS.DELETE)
   deleteUserMQ(id: number) {
     return this.usersService.delete(id);
   }

@@ -3,7 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 
 import { UsersService } from './users.service';
-import { User, UserRole } from '../entities/user.entity';
+import { User } from '../entities/user.entity';
+import { UserRole } from '@app/shared';
 
 const mockUsersRepo = {
   findOneBy: jest.fn(),

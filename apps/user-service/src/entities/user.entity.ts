@@ -6,10 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-export enum UserRole {
-  RIDER = 'RIDER',
-  DRIVER = 'DRIVER',
-}
+import { UserRole } from '@app/shared';
 
 @Entity('users')
 export class User {
