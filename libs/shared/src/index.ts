@@ -15,3 +15,5 @@ export * from './dto/update-driver-status.dto';
 export * from './dto/create-trip.dto';
 export * from './dto/update-trip-status.dto';
 export * from './dto/accept-trip.dto';
+
+export * from './dto/login.dto';

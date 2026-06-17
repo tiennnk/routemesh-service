@@ -2,7 +2,7 @@ import { Controller, Param, Get, Post, Body, Delete, ParseIntPipe } from '@nestj
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { UsersService } from './users.service';
-import { CreateUserDto, USER_PATTERNS } from '@app/shared';
+import { CreateUserDto, LoginDto, USER_PATTERNS } from '@app/shared';
 
 @Controller('users')
 export class UsersController {
@@ -46,5 +46,10 @@ export class UsersController {
   @MessagePattern(USER_PATTERNS.DELETE)
   deleteUserMQ(id: number) {
     return this.usersService.delete(id);
+  }
+
+  @MessagePattern(USER_PATTERNS.LOGIN)
+  loginMQ(@Payload() dto: LoginDto) {
+    return this.usersService.login(dto);
   }
 }
