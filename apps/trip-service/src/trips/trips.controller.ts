@@ -43,6 +43,11 @@ export class TripsController {
     return this.tripsService.findTripById(id);
   }
 
+  @MessagePattern(TRIP_PATTERNS.FIND_BY_RIDER)
+  handleFindTripsByRider(@Payload() riderId: number) {
+    return this.tripsService.findTripsByRiderId(riderId);
+  }
+
   @MessagePattern(TRIP_PATTERNS.ACCEPT)
   handleAcceptTrip(@Payload() payload: { id: number; dto: AcceptTripDto }) {
     return this.tripsService.acceptTrip(payload.id, payload.dto);

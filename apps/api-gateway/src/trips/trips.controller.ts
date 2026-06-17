@@ -12,6 +12,11 @@ export class TripsController {
     return this.tripsService.createTrip(dto);
   }
 
+  @Get('rider/:riderId')
+  getTripsByRider(@Param('riderId', ParseIntPipe) riderId: number) {
+    return this.tripsService.getTripsByRiderId(riderId);
+  }
+
   @Get(':id')
   getTrip(@Param('id', ParseIntPipe) id: number) {
     return this.tripsService.getTripById(id);

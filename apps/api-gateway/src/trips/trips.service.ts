@@ -16,6 +16,10 @@ export class TripsService {
     return firstValueFrom(this.client.send(TRIP_PATTERNS.FIND_BY_ID, id));
   }
 
+  getTripsByRiderId(riderId: number) {
+    return firstValueFrom(this.client.send(TRIP_PATTERNS.FIND_BY_RIDER, riderId));
+  }
+
   acceptTrip(id: number, dto: AcceptTripDto) {
     return firstValueFrom(this.client.send(TRIP_PATTERNS.ACCEPT, { id, dto }));
   }

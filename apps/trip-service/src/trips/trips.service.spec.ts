@@ -8,6 +8,7 @@ import { TripStatus } from '@app/shared';
 
 const mockTripsRepo = {
   findOneBy: jest.fn(),
+  findBy: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
 };
@@ -44,6 +45,29 @@ describe('TripsService', () => {
 
       expect(mockTripsRepo.create).toHaveBeenCalledWith(dto);
       expect(result).toEqual(trip);
+    });
+  });
+
+  describe('findTripsByRiderId', () => {
+    it('return list of trips for a rider', async () => {
+      const trips = [
+        { id: 1, riderId: 10, status: TripStatus.COMPLETED } as Trip,
+        { id: 2, riderId: 10, status: TripStatus.PENDING } as Trip,
+      ];
+      mockTripsRepo.findBy.mockResolvedValue(trips);
+
+      const result = await service.findTripsByRiderId(10);
+
+      expect(mockTripsRepo.findBy).toHaveBeenCalledWith({ riderId: 10 });
+      expect(result).toHaveLength(2);
+    });
+
+    it('return empty array if rider has no trips', async () => {
+      mockTripsRepo.findBy.mockResolvedValue([]);
+
+      const result = await service.findTripsByRiderId(999);
+
+      expect(result).toEqual([]);
     });
   });
 
