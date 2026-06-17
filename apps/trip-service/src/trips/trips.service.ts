@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Trip } from '../entities/trip.entity';
 import { CreateTripDto, UpdateTripStatusDto, AcceptTripDto, TripStatus } from '@app/shared';
 
-const VALID_TRANSITIONS = {
+const VALID_TRANSITIONS: Record<TripStatus, TripStatus[]> = {
   [TripStatus.PENDING]: [TripStatus.ACCEPTED, TripStatus.CANCELLED],
   [TripStatus.ACCEPTED]: [TripStatus.IN_PROGRESS, TripStatus.CANCELLED],
   [TripStatus.IN_PROGRESS]: [TripStatus.COMPLETED, TripStatus.CANCELLED],
@@ -18,7 +18,7 @@ export class TripsService {
   constructor(
     @InjectRepository(Trip)
     private readonly tripRepository: Repository<Trip>,
-  ) { }
+  ) {}
 
   createTrip(dto: CreateTripDto): Promise<Trip> {
     const trip = this.tripRepository.create(dto);
@@ -27,6 +27,10 @@ export class TripsService {
 
   findTripById(id: number): Promise<Trip | null> {
     return this.tripRepository.findOneBy({ id });
+  }
+
+  findTripsByRiderId(riderId: number): Promise<Trip[]> {
+    return this.tripRepository.findBy({ riderId });
   }
 
   async acceptTrip(id: number, dto: AcceptTripDto): Promise<Trip> {
