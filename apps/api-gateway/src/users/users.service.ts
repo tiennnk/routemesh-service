@@ -12,11 +12,11 @@ export class UsersService {
     return firstValueFrom(this.client.send(USER_PATTERNS.CREATE, dto));
   }
 
-  getUserById(id: number) {
+  findUserById(id: number) {
     return firstValueFrom(this.client.send(USER_PATTERNS.FIND_BY_ID, id));
   }
 
-  getUserByPhone(phone: string) {
+  findUserByPhone(phone: string) {
     return firstValueFrom(this.client.send(USER_PATTERNS.FIND_BY_PHONE, phone));
   }
 

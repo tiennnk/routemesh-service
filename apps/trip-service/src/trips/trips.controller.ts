@@ -14,7 +14,7 @@ export class TripsController {
   }
 
   @Get(':id')
-  getTrip(@Param('id', ParseIntPipe) id: number) {
+  getTripById(@Param('id', ParseIntPipe) id: number) {
     return this.tripsService.findTripById(id);
   }
 
