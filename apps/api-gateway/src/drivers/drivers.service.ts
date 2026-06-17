@@ -15,7 +15,7 @@ export class DriversService {
     return firstValueFrom(this.driverClient.send(DRIVER_PATTERNS.CREATE, dto));
   }
 
-  getDriverById(id: number) {
+  findDriverById(id: number) {
     return firstValueFrom(this.driverClient.send(DRIVER_PATTERNS.FIND_BY_ID, id));
   }
 

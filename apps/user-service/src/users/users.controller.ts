@@ -14,12 +14,12 @@ export class UsersController {
   }
 
   @Get(':id')
-  getUserById(@Param('id', ParseIntPipe) id: number) {
+  findUserById(@Param('id', ParseIntPipe) id: number) {
     return this.usersService.findUserById(id);
   }
 
   @Get('phone/:phone')
-  getUserByPhone(@Param('phone') phone: string) {
+  findUserByPhone(@Param('phone') phone: string) {
     return this.usersService.findUserByPhone(phone);
   }
 
@@ -34,12 +34,12 @@ export class UsersController {
   }
 
   @MessagePattern(USER_PATTERNS.FIND_BY_ID)
-  getUserByIdMQ(id: number) {
+  findUserByIdMQ(id: number) {
     return this.usersService.findUserById(id);
   }
 
   @MessagePattern(USER_PATTERNS.FIND_BY_PHONE)
-  getUserByPhoneMQ(phone: string) {
+  findUserByPhoneMQ(phone: string) {
     return this.usersService.findUserByPhone(phone);
   }
 
