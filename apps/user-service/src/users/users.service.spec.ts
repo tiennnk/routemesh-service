@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import { ConflictException, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 import { UsersService } from './users.service';
 import { User } from '../entities/user.entity';
@@ -13,6 +15,15 @@ const mockUsersRepo = {
   delete: jest.fn(),
 };
 
+const mockJwtService = {
+  sign: jest.fn().mockReturnValue('mock-token'),
+};
+
+jest.mock('bcrypt', () => ({
+  hash: jest.fn().mockResolvedValue('hashed-password'),
+  compare: jest.fn(),
+}));
+
 describe('UsersService', () => {
   let service: UsersService;
 
@@ -23,6 +34,10 @@ describe('UsersService', () => {
         {
           provide: getRepositoryToken(User),
           useValue: mockUsersRepo,
+        },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
         },
       ],
     }).compile();
@@ -35,7 +50,12 @@ describe('UsersService', () => {
   });
 
   describe('create', () => {
-    const dto = { name: 'Tien Nguyen', phone: '0323456789', role: UserRole.RIDER };
+    const dto = {
+      name: 'Tien Nguyen',
+      phone: '0323456789',
+      role: UserRole.RIDER,
+      password: '123456789',
+    };
 
     it('create user and return data user', async () => {
       const savedUser = { id: 1, ...dto } as User;
@@ -117,6 +137,34 @@ describe('UsersService', () => {
       mockUsersRepo.findOneBy.mockResolvedValue(null);
 
       await expect(service.delete(999)).rejects.toThrow(NotFoundException);
+    });
+  });
+
+  describe('login', () => {
+    it('return jwt access_token if login success', async () => {
+      const user = { id: 1 } as User;
+      mockUsersRepo.findOneBy.mockResolvedValue(user);
+      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+
+      const result = await service.login({ phone: '0323456789', password: '123456789' });
+      expect(result).toEqual({ access_token: 'mock-token' });
+    });
+
+    it('throw UnauthorizedException if user not found', async () => {
+      mockUsersRepo.findOneBy.mockResolvedValue(null);
+
+      await expect(service.login({ phone: '0323456789', password: '123456789' })).rejects.toThrow(
+        UnauthorizedException,
+      );
+    });
+
+    it('throw UnauthorizedException if user not found (password not match)', async () => {
+      mockUsersRepo.findOneBy.mockResolvedValue({ id: 1, phone: '0323456789', password: 'hashed' });
+      (bcrypt.compare as jest.Mock).mockResolvedValue(false); // pass not match
+
+      await expect(service.login({ phone: '0323456789', password: '123456789' })).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });
