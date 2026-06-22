@@ -35,6 +35,12 @@ export class TripsService {
 
   async acceptTrip(id: number, dto: AcceptTripDto): Promise<Trip> {
     const trip = await this.getTripOrFail(id);
+
+    const validNextStatus = VALID_TRANSITIONS[trip.status];
+    if (!validNextStatus.includes(TripStatus.ACCEPTED)) {
+      throw new BadRequestException(`cannot accept trip with status ${trip.status}`);
+    }
+
     trip.driverId = dto.driverId;
     trip.status = TripStatus.ACCEPTED;
     return this.tripRepository.save(trip);
